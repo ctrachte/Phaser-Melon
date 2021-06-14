@@ -25,5 +25,8 @@
       "browser",
       "windows"
     ]
+  },
+  "dependencies": {
+    "bootstrap": "^5.0.1"
   }
 }
