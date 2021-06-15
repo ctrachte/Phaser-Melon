@@ -1,8 +1,8 @@
 {
-  "name": "com.example.hello",
-  "displayName": "HelloWorld",
+  "name": "melon.phaser",
+  "displayName": "Melon Phaser",
   "version": "1.0.0",
-  "description": "A sample Apache Cordova application that responds to the deviceready event.",
+  "description": "A simple melon-zapping game! Built with Cordova, melon.js and phaser.js.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,7 @@
   "keywords": [
     "ecosystem:cordova"
   ],
-  "author": "Apache Cordova Team",
+  "author": "Caleb Trachte",
   "license": "Apache-2.0",
   "devDependencies": {
     "cordova-browser": "^6.0.0",
