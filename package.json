@@ -29,6 +29,8 @@
     ]
   },
   "dependencies": {
-    "bootstrap": "^5.0.1"
+    "bootstrap": "^5.0.1",
+    "phaser": "^3.55.2",
+    "require": "^2.4.20"
   }
 }
