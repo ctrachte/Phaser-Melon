@@ -31,6 +31,6 @@
   "dependencies": {
     "bootstrap": "^5.0.1",
     "phaser": "^3.55.2",
-    "require": "^2.4.20"
+    "requirejs": "^2.3.6"
   }
 }
