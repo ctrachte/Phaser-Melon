@@ -54,18 +54,19 @@ function onDeviceReady() {
     var game = new Phaser.Game(config);
 
     function preload() {
-        this.load.setBaseURL('/');
-
-        this.load.image('sky', 'www/assets/space3.png');
-        this.load.image('logo', 'www/assets/phaser3-logo.png');
-        this.load.image('red', 'www/assets/red.png');
-        this.load.image('white-flare', 'www/assets/white-flare.png');
-        this.load.image('melon', 'www/assets/melon.png');
-
+        this.load.image('sky', './assets/space3.png');
+        this.load.image('logo', './assets/phaser3-logo.png');
+        this.load.image('red', './assets/red.png');
+        this.load.image('white-flare', './assets/white-flare.png');
+        this.load.image('melon', './assets/melon.png');
     }
 
     function create() {
-        // this.add.image(1280, 720, 'sky');
+        let image = this.add.image(physicalScreenWidth / 2, physicalScreenHeight / 2, 'sky');
+        let scaleX = this.cameras.main.width / image.width;
+        let scaleY = this.cameras.main.height / image.height;
+        let scale = Math.max(scaleX, scaleY);
+        image.setScale(scale).setScrollFactor(0);
 
         var particles = this.add.particles('red');
 
