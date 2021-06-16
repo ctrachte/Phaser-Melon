@@ -81,7 +81,62 @@ function onDeviceReady() {
         logo.setVelocity(333, 333);
         logo.setBounce(1, 1);
         logo.setCollideWorldBounds(true);
-
+		this.laserGroup = new LaserGroup(this);
+        this.input.on('pointerdown', pointer => {
+            let x = this.input.x;
+            let y = this.input.y;
+            this.laserGroup.fireLaser(x, y);
+        });
         emitter.startFollow(logo);
+    }
+    class LaserGroup extends Phaser.Physics.Arcade.Group {
+        constructor(scene) {
+            // Call the super constructor, passing in a world and a scene
+            super(scene.physics.world, scene);
+
+            // Initialize the group
+            this.scene = scene;
+            this.createMultiple({
+                classType: Laser, // This is the class we create just below
+                frameQuantity: 30, // Create 30 instances in the pool
+                active: false,
+                visible: false,
+                key: 'melon'
+            });
+        }
+        fireLaser(x, y) {
+            // Get the first available sprite in the group
+            const laser = this.getFirstDead(false);
+            if (laser) {
+                laser.fire(x, y, this.scene);
+            }
+        }
+    }
+    class Laser extends Phaser.Physics.Arcade.Sprite {
+        constructor(scene, x, y) {
+            super(scene, x, y, 'melon');
+        }
+        fire(x, y, scene) {
+            var particles = scene.add.particles('red');
+
+            var emitter = particles.createEmitter({
+                speed: 100,
+                scale: { start: 0.2, end: 0 },
+                blendMode: 'ADD'
+            });
+            this.body.reset(x, y);
+            this.setActive(true);
+            this.setVisible(true);
+            emitter.startFollow(this);
+            this.setVelocityY(-900);
+        }
+        preUpdate(time, delta) {
+            super.preUpdate(time, delta);
+
+            if (this.y <= 0) {
+                this.setActive(false);
+                this.setVisible(false);
+            }
+        }
     }
 }
