@@ -24,17 +24,21 @@ document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
     // load fonts
-    if ( navigator.platform.indexOf('Win') != -1 ) {
+    if (navigator.platform.indexOf('Win') != -1) {
         window.document.getElementById("wrapper").setAttribute("class", "windows");
-      } else if ( navigator.platform.indexOf('Mac') != -1 ) {
+    } else if (navigator.platform.indexOf('Mac') != -1) {
         window.document.getElementById("wrapper").setAttribute("class", "mac");
-      }
+    }
+
+    let physicalScreenWidth = window.screen.width * window.devicePixelRatio;
+    let physicalScreenHeight = window.screen.height * window.devicePixelRatio;
+
     // Cordova is now initialized. Have fun!
     console.log('Running cordova-' + device.platform + " - " + cordova.platformId + '@' + cordova.version);
     var config = {
         type: Phaser.AUTO,
-        width: screen.width,
-        height: screen.height,
+        width: physicalScreenWidth,
+        height: physicalScreenHeight,
         physics: {
             default: 'arcade',
             arcade: {
@@ -49,8 +53,7 @@ function onDeviceReady() {
 
     var game = new Phaser.Game(config);
 
-    function preload ()
-    {
+    function preload() {
         this.load.setBaseURL('/');
 
         this.load.image('sky', 'www/assets/space3.png');
@@ -61,8 +64,7 @@ function onDeviceReady() {
 
     }
 
-    function create ()
-    {
+    function create() {
         // this.add.image(1280, 720, 'sky');
 
         var particles = this.add.particles('red');
