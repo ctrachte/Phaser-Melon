@@ -42,7 +42,7 @@ function onDeviceReady() {
         physics: {
             default: 'arcade',
             arcade: {
-                gravity: { y: 200 }
+                gravity: { y: 500 }
             }
         },
         scene: {
@@ -67,27 +67,28 @@ function onDeviceReady() {
         let scaleY = this.cameras.main.height / image.height;
         let scale = Math.max(scaleX, scaleY);
         image.setScale(scale).setScrollFactor(0);
-
+        var cannon = this.add.image(0, physicalScreenHeight, 'white-flare').setDepth(1);
         var particles = this.add.particles('red');
+        var angle = 0;
+        // var emitter = particles.createEmitter({
+        //     speed: 100,
+        //     scale: { start: 0.2, end: 0 },
+        //     blendMode: 'ADD'
+        // });
 
-        var emitter = particles.createEmitter({
-            speed: 100,
-            scale: { start: 0.2, end: 0 },
-            blendMode: 'ADD'
-        });
+        // var logo = this.physics.add.image(400, 100, 'melon');
 
-        var logo = this.physics.add.image(400, 100, 'melon');
-
-        logo.setVelocity(333, 333);
-        logo.setBounce(1, 1);
-        logo.setCollideWorldBounds(true);
+        // logo.setVelocity(333, 333);
+        // logo.setBounce(1, 1);
+        // logo.setCollideWorldBounds(true);
 		this.laserGroup = new LaserGroup(this);
         this.input.on('pointerdown', pointer => {
             let x = this.input.x;
             let y = this.input.y;
-            this.laserGroup.fireLaser(x, y);
+            angle = Phaser.Math.Angle.BetweenPoints(cannon, pointer);
+            this.laserGroup.fireLaser(angle, x, y);
         });
-        emitter.startFollow(logo);
+        // emitter.startFollow(logo);
     }
     class LaserGroup extends Phaser.Physics.Arcade.Group {
         constructor(scene) {
@@ -104,11 +105,11 @@ function onDeviceReady() {
                 key: 'melon'
             });
         }
-        fireLaser(x, y) {
+        fireLaser(angle, x, y) {
             // Get the first available sprite in the group
             const laser = this.getFirstDead(false);
             if (laser) {
-                laser.fire(x, y, this.scene);
+                laser.fire(angle, x, y, this.scene);
             }
         }
     }
@@ -116,19 +117,23 @@ function onDeviceReady() {
         constructor(scene, x, y) {
             super(scene, x, y, 'melon');
         }
-        fire(x, y, scene) {
+        fire(angle, x, y, scene) {
             var particles = scene.add.particles('red');
 
             var emitter = particles.createEmitter({
-                speed: 100,
-                scale: { start: 0.2, end: 0 },
+                speed: 5,
+                scale: { start: 0.1, end: 0 },
                 blendMode: 'ADD'
             });
-            this.body.reset(x, y);
+            // let opposite = window.screen.height - y;
+            // let adjacent = window.screen.width - x;
+            // let angle = Math.atan(opposite / adjacent);
+            // console.log(angle)
+            this.body.reset(0, window.screen.height);
             this.setActive(true);
             this.setVisible(true);
             emitter.startFollow(this);
-            this.setVelocityY(-900);
+            scene.physics.velocityFromRotation(angle, 900, this.body.velocity);
         }
         preUpdate(time, delta) {
             super.preUpdate(time, delta);
