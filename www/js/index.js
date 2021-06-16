@@ -23,6 +23,12 @@
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
+    // load fonts
+    if ( navigator.platform.indexOf('Win') != -1 ) {
+        window.document.getElementById("wrapper").setAttribute("class", "windows");
+      } else if ( navigator.platform.indexOf('Mac') != -1 ) {
+        window.document.getElementById("wrapper").setAttribute("class", "mac");
+      }
     // Cordova is now initialized. Have fun!
     console.log('Running cordova-' + device.platform + " - " + cordova.platformId + '@' + cordova.version);
     var config = {
@@ -51,6 +57,8 @@ function onDeviceReady() {
         this.load.image('logo', 'www/assets/phaser3-logo.png');
         this.load.image('red', 'www/assets/red.png');
         this.load.image('white-flare', 'www/assets/white-flare.png');
+        this.load.image('melon', 'www/assets/melon.png');
+
     }
 
     function create ()
@@ -61,13 +69,13 @@ function onDeviceReady() {
 
         var emitter = particles.createEmitter({
             speed: 100,
-            scale: { start: 1, end: 0 },
+            scale: { start: 0.5, end: 0 },
             blendMode: 'ADD'
         });
 
-        var logo = this.physics.add.image(400, 100, 'white-flare');
+        var logo = this.physics.add.image(400, 100, 'melon');
 
-        logo.setVelocity(100, 200);
+        logo.setVelocity(333, 333);
         logo.setBounce(1, 1);
         logo.setCollideWorldBounds(true);
 
