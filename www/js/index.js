@@ -45,16 +45,17 @@ function onDeviceReady() {
 
     function preload ()
     {
-        this.load.setBaseURL('http://labs.phaser.io');
+        this.load.setBaseURL('/');
 
-        this.load.image('sky', 'assets/skies/space3.png');
-        this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-        this.load.image('red', 'assets/particles/red.png');
+        this.load.image('sky', 'www/assets/space3.png');
+        this.load.image('logo', 'www/assets/phaser3-logo.png');
+        this.load.image('red', 'www/assets/red.png');
+        this.load.image('white-flare', 'www/assets/white-flare.png');
     }
 
     function create ()
     {
-        this.add.image(400, 300, 'sky');
+        // this.add.image(1280, 720, 'sky');
 
         var particles = this.add.particles('red');
 
@@ -64,7 +65,7 @@ function onDeviceReady() {
             blendMode: 'ADD'
         });
 
-        var logo = this.physics.add.image(400, 100, 'logo');
+        var logo = this.physics.add.image(400, 100, 'white-flare');
 
         logo.setVelocity(100, 200);
         logo.setBounce(1, 1);
