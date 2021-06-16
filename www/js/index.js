@@ -71,7 +71,7 @@ function onDeviceReady() {
 
         var emitter = particles.createEmitter({
             speed: 100,
-            scale: { start: 0.5, end: 0 },
+            scale: { start: 0.2, end: 0 },
             blendMode: 'ADD'
         });
 

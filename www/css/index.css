@@ -21,7 +21,7 @@
  @import url(https://fonts.googleapis.com/css?family=Righteous);
  @import url(https://fonts.googleapis.com/css?family=Candal);
  @import url(https://fonts.googleapis.com/css?family=Permanent+Marker);
-@import url(https://fonts.googleapis.com/css?family=Monoton);
+ @import url(https://fonts.googleapis.com/css?family=Monoton);
 
 /* fonts by https://codepen.io/boldfacedesign/pen/EoGgD*/
 
@@ -31,18 +31,15 @@
     -webkit-text-stroke: 0.1px #f1f1f1;
     font-family: 'Righteous', cursive;
     font-size: 160px;
-    margin: 150px 0 50px 0;
   }
   
   .vectro:after {
     content: '';
     position: absolute;
-    left: 0;
+    left: -10;
     top: 0;
     width: 100%;
     height: 100%;
-    /*-webkit-animation:vectro_effect 0.067s infinite;*/
-    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 2px);
   }
   
   
@@ -181,13 +178,50 @@ h1 {
 
 @keyframes fade {
     from { opacity: 1.0; }
-    50% { opacity: 0.4; }
+    50% { opacity: 0.5; }
     to { opacity: 1.0; }
 }
 
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-image: linear-gradient(to bottom, #cfd9df 0%, #e2ebf0 100%);
+  font-family: 'Source Sans Pro', sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+@-webkit-keyframes pulse {
+    0% { -webkit-transform: scale(0.9); opacity: 0.5; }
+    50% { -webkit-transform: scale(1); opacity: 1; }
+    100% { -webkit-transform: scale(0.9); opacity: 0.5; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.9); opacity: 0.5; }
+    50% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.5; }
+}
+
+
 .blink {
-    animation:fade 3000ms infinite;
-    -webkit-animation:fade 3000ms infinite;
+    animation:fade 3000ms linear infinite;
+    -webkit-animation:fade 3000ms linear infinite;
+}
+.pulse {
+    -webkit-animation: pulse 3s infinite ease-in-out;
+    -o-animation: pulse 3s infinite ease-in-out;
+    -ms-animation: pulse 3s infinite ease-in-out; 
+    -moz-animation: pulse 3s infinite ease-in-out; 
+    animation: pulse 3s infinite ease-in-out;
 }
 
 @media screen and (prefers-color-scheme: dark) {
