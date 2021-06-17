@@ -28,8 +28,8 @@ let game = null;
 let this_scene;
 function gameStart(action) {
 
-    let physicalScreenWidth = window.screen.width * window.devicePixelRatio;
-    let physicalScreenHeight = window.screen.height * window.devicePixelRatio;
+    let physicalScreenWidth = screen.width * window.devicePixelRatio;
+    let physicalScreenHeight = screen.height * window.devicePixelRatio;
     var config = {
         type: Phaser.AUTO,
         width: physicalScreenWidth,
@@ -62,8 +62,8 @@ function gameStart(action) {
 
     function create() {
         let image = this.add.image(physicalScreenWidth / 2, physicalScreenHeight / 2, 'sky');
-        let scaleX = this.cameras.main.width / image.width;
-        let scaleY = this.cameras.main.height / image.height;
+        let scaleX = physicalScreenWidth / image.width;
+        let scaleY = physicalScreenHeight / image.height;
         let scale = Math.max(scaleX, scaleY);
         image.setScale(scale).setScrollFactor(0);
         // origin point of melons
@@ -76,8 +76,8 @@ function gameStart(action) {
         });
         var children = targetGroup.getChildren();
         for (var i = 0; i < children.length; i++) {
-            var x = Phaser.Math.Between(800, physicalScreenWidth);
-            var y = Phaser.Math.Between(50, physicalScreenHeight);
+            var x = Phaser.Math.Between((physicalScreenWidth*.9) - children[i].width, physicalScreenWidth - children[i].width);
+            var y = Phaser.Math.Between((children[i].height * 1.25), physicalScreenHeight - children[i].height);
             children[i].setPosition(x, y);
         }
         // melon chunks!
