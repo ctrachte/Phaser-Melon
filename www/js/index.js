@@ -182,7 +182,6 @@ function onDeviceReady() {
 
     gameStart('start');
     xIcon.hide();
-    this_scene.pause();
     // Cordova is now initialized. Have fun!
     console.log('Running cordova-' + device.platform + " - " + cordova.platformId + '@' + cordova.version);
 
