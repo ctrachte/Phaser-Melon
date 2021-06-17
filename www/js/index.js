@@ -57,6 +57,7 @@ function gameStart(action) {
         this.load.image('red', './assets/red.png');
         this.load.image('white-flare', './assets/white-flare.png');
         this.load.image('melon', './assets/melon.png');
+        this.load.image('chunk', './assets/chunk.png');
     }
     let restartButton;
 
@@ -67,6 +68,46 @@ function gameStart(action) {
         let scale = Math.max(scaleX, scaleY);
         image.setScale(scale).setScrollFactor(0);
         var cannon = this.add.image(0, physicalScreenHeight, 'white-flare').setDepth(1);
+        targetGroup = this.physics.add.staticGroup({
+            key: 'logo',
+            frameQuantity: 3,
+            immovable: true
+        });
+        var chunks = this.add.particles('chunk');
+        var children = targetGroup.getChildren();
+        for (var i = 0; i < children.length; i++) {
+            var x = Phaser.Math.Between(800, physicalScreenWidth);
+            var y = Phaser.Math.Between(50, physicalScreenHeight);
+            children[i].setPosition(x, y);
+        }
+
+        this.laserGroup = new LaserGroup(this);
+        var melons = this.laserGroup.getChildren();
+        for (var i = 0; i < melons.length; i++) {
+            let melon = melons[i];
+            let laserGroup = this.laserGroup;
+            this.physics.add.overlap(children, melons[i], function () {
+                var explosion = chunks.createEmitter({
+                    x: melon.x,
+                    y: melon.y,
+                    speed: 900,
+                    scale: { start: 8, end: 0 },
+                    blendMode: 'SCREEN',
+                    //active: false,
+                    lifespan: 500,
+                    gravityY: 1000
+                });
+                explosion.explode();
+                //  Hide the sprite
+                laserGroup.killAndHide(melon);
+                //  And disable the body
+                melon.body.enable = false;
+                melon.emitter.on = false;
+                melon.emitter.killAll();
+            });
+        }
+        targetGroup.refresh();
+
         var particles = this.add.particles('red');
         var angle = 0;
         // button = this.add.button(physicalScreenWidth - 60, 50, 'button', restart, this, 2, 1, 0);
@@ -75,7 +116,6 @@ function gameStart(action) {
         //     scale: { start: 0.2, end: 0 },
         //     blendMode: 'ADD'
         // });
-
         // var logo = this.physics.add.image(400, 100, 'melon');
         this_scene = this.scene;
 
@@ -93,7 +133,6 @@ function gameStart(action) {
         // logo.setVelocity(333, 333);
         // logo.setBounce(1, 1);
         // logo.setCollideWorldBounds(true);
-        this.laserGroup = new LaserGroup(this);
         this.input.on('pointerdown', pointer => {
             let x = this.input.x;
             let y = this.input.y;
@@ -123,7 +162,7 @@ function gameStart(action) {
             // Get the first available sprite in the group
             const laser = this.getFirstDead(false);
             if (laser) {
-                laser.fire(angle, x, y, this.scene);
+                laser.fire(angle, x, y, this.scene, this.melonTarget);
             }
         }
     }
@@ -131,14 +170,16 @@ function gameStart(action) {
         constructor(scene, x, y) {
             super(scene, x, y, 'melon');
         }
-        fire(angle, x, y, scene) {
+        fire(angle, x, y, scene, melonTarget) {
             var particles = scene.add.particles('red');
 
-            var emitter = particles.createEmitter({
+            this.emitter = particles.createEmitter({
                 speed: 60,
                 scale: { start: 0.05, end: 0 },
                 blendMode: 'ADD'
             });
+
+
             // let opposite = window.screen.height - y;
             // let adjacent = window.screen.width - x;
             // let angle = Math.atan(opposite / adjacent);
@@ -146,8 +187,9 @@ function gameStart(action) {
             this.body.reset(0, window.screen.height);
             this.setActive(true);
             this.setVisible(true);
-            emitter.startFollow(this);
+            this.emitter.startFollow(this);
             scene.physics.velocityFromRotation(angle, 900, this.body.velocity);
+
         }
         preUpdate(time, delta) {
             super.preUpdate(time, delta);
