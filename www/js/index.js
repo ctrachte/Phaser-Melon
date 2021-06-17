@@ -59,7 +59,6 @@ function gameStart(action) {
         this.load.image('melon', './assets/melon.png');
         this.load.image('chunk', './assets/chunk.png');
     }
-    let restartButton;
 
     function create() {
         let image = this.add.image(physicalScreenWidth / 2, physicalScreenHeight / 2, 'sky');
@@ -88,8 +87,8 @@ function gameStart(action) {
         var melons = this.laserGroup.getChildren();
         for (var i = 0; i < melons.length; i++) {
             let melon = melons[i];
-            let laserGroup = this.laserGroup;/
-            // melon contact!
+            let laserGroup = this.laserGroup;
+            // melon smashed!
             this.physics.add.overlap(children, melons[i], function () {
                 var explosion = chunks.createEmitter({
                     x: melon.x,
