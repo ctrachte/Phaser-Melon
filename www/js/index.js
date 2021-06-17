@@ -67,40 +67,46 @@ function gameStart(action) {
         let scaleY = this.cameras.main.height / image.height;
         let scale = Math.max(scaleX, scaleY);
         image.setScale(scale).setScrollFactor(0);
+        // origin point of melons
         var cannon = this.add.image(0, physicalScreenHeight, 'white-flare').setDepth(1);
+        // targets, in this case, the phaser logo
         targetGroup = this.physics.add.staticGroup({
             key: 'logo',
             frameQuantity: 3,
             immovable: true
         });
-        var chunks = this.add.particles('chunk');
         var children = targetGroup.getChildren();
         for (var i = 0; i < children.length; i++) {
             var x = Phaser.Math.Between(800, physicalScreenWidth);
             var y = Phaser.Math.Between(50, physicalScreenHeight);
             children[i].setPosition(x, y);
         }
-
+        // melon chunks!
+        var chunks = this.add.particles('chunk');
+        // melons!
         this.laserGroup = new LaserGroup(this);
         var melons = this.laserGroup.getChildren();
         for (var i = 0; i < melons.length; i++) {
             let melon = melons[i];
-            let laserGroup = this.laserGroup;
+            let laserGroup = this.laserGroup;/
+            // melon contact!
             this.physics.add.overlap(children, melons[i], function () {
                 var explosion = chunks.createEmitter({
                     x: melon.x,
                     y: melon.y,
-                    speed: 900,
-                    scale: { start: 8, end: 0 },
+                    speed: { min: -800, max: 800 },
+                    angle: { min: 0, max: 360 },
+                    scale: { start: 1, end: 0 },
                     blendMode: 'SCREEN',
-                    //active: false,
-                    lifespan: 500,
-                    gravityY: 1000
+                    lifespan: 2000,
+                    gravityY: 800
                 });
-                explosion.explode();
-                //  Hide the sprite
+                for (let i=100; i > 0; i--) {
+                    explosion.explode();
+                }
+                //  Hide the melon
                 laserGroup.killAndHide(melon);
-                //  And disable the body
+                //  And disable the melon
                 melon.body.enable = false;
                 melon.emitter.on = false;
                 melon.emitter.killAll();
@@ -108,31 +114,22 @@ function gameStart(action) {
         }
         targetGroup.refresh();
 
-        var particles = this.add.particles('red');
         var angle = 0;
-        // button = this.add.button(physicalScreenWidth - 60, 50, 'button', restart, this, 2, 1, 0);
-        // var emitter = particles.createEmitter({
-        //     speed: 100,
-        //     scale: { start: 0.2, end: 0 },
-        //     blendMode: 'ADD'
-        // });
-        // var logo = this.physics.add.image(400, 100, 'melon');
         this_scene = this.scene;
-
+        // new game button
         NewGame.addEventListener('click', (e) => {
             menu.hide();
             xIcon.show();
             this_scene.resume();
         });
+        // close icon
         xIcon.addEventListener("click", function () {
             xIcon.hide();
             menu.show();
             this_scene.restart();
             this_scene.pause();
         });
-        // logo.setVelocity(333, 333);
-        // logo.setBounce(1, 1);
-        // logo.setCollideWorldBounds(true);
+        // fire melons!!
         this.input.on('pointerdown', pointer => {
             let x = this.input.x;
             let y = this.input.y;
@@ -140,9 +137,8 @@ function gameStart(action) {
             this.laserGroup.fireLaser(angle, x, y);
         });
         this.scene.pause();
-        // emitter.startFollow(logo);
     }
-
+    // melons class, we call it laserGroup for now to be more reusable
     class LaserGroup extends Phaser.Physics.Arcade.Group {
         constructor(scene) {
             // Call the super constructor, passing in a world and a scene
@@ -166,24 +162,18 @@ function gameStart(action) {
             }
         }
     }
+    // a single melon, we will call it a laser to be more reusable
     class Laser extends Phaser.Physics.Arcade.Sprite {
         constructor(scene, x, y) {
             super(scene, x, y, 'melon');
         }
         fire(angle, x, y, scene, melonTarget) {
             var particles = scene.add.particles('red');
-
             this.emitter = particles.createEmitter({
                 speed: 60,
                 scale: { start: 0.05, end: 0 },
                 blendMode: 'ADD'
             });
-
-
-            // let opposite = window.screen.height - y;
-            // let adjacent = window.screen.width - x;
-            // let angle = Math.atan(opposite / adjacent);
-            // console.log(angle)
             this.body.reset(0, window.screen.height);
             this.setActive(true);
             this.setVisible(true);
