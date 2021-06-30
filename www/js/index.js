@@ -29,6 +29,8 @@ let this_scene;
 function gameStart(action) {
     let score = 0;
     let scoreText;
+    let melonsText;
+    let melonQuantity;
     let physicalScreenWidth = screen.width * window.devicePixelRatio;
     let physicalScreenHeight = screen.height * window.devicePixelRatio;
     var config = {
@@ -62,7 +64,6 @@ function gameStart(action) {
     }
 
     function create() {
-        scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#f1f1f1' });
         let image = this.add.image(physicalScreenWidth / 2, physicalScreenHeight / 2, 'sky');
         let scaleX = physicalScreenWidth / image.width;
         let scaleY = physicalScreenHeight / image.height;
@@ -76,6 +77,9 @@ function gameStart(action) {
             frameQuantity: 3,
             immovable: true
         });
+        scoreText = this.add.text(200, 200, 'Score: 0', { fontSize: '32px', fill: '#f1f1f1' });
+        melonsText = this.add.text(200, 400, 'Melons: 30', { fontSize: '32px', fill: '#f1f1f1' });
+
         var targets = targetGroup.getChildren();
         for (var i = 0; i < targets.length; i++) {
             var x = Phaser.Math.Between((physicalScreenWidth * .9) - targets[i].width, physicalScreenWidth - targets[i].width);
@@ -87,6 +91,7 @@ function gameStart(action) {
         // melons!
         this.laserGroup = new LaserGroup(this);
         var melons = this.laserGroup.getChildren();
+        melonQuantity = melons.length;
         for (var i = 0; i < melons.length; i++) {
             let melon = melons[i];
             let laserGroup = this.laserGroup;
@@ -115,6 +120,7 @@ function gameStart(action) {
                 // update score
                 score += 10;
                 scoreText.setText('Score: ' + score);
+                console.log(scoreText)
             });
         }
         targetGroup.refresh();
@@ -173,18 +179,23 @@ function gameStart(action) {
             super(scene, x, y, 'melon');
         }
         fire(angle, x, y, scene, melonTarget) {
-            var particles = scene.add.particles('red');
-            this.emitter = particles.createEmitter({
-                speed: 60,
-                scale: { start: 0.05, end: 0 },
-                blendMode: 'ADD'
-            });
-            this.body.reset(0, window.screen.height);
-            this.setActive(true);
-            this.setVisible(true);
-            this.emitter.startFollow(this);
-            scene.physics.velocityFromRotation(angle, 900, this.body.velocity);
-
+            if (melonQuantity > 0) {
+                var particles = scene.add.particles('red');
+                this.emitter = particles.createEmitter({
+                    speed: 60,
+                    scale: { start: 0.05, end: 0 },
+                    blendMode: 'ADD'
+                });
+                melonQuantity--;
+                melonsText.setText('Melons: ' + melonQuantity);
+                this.body.reset(0, window.screen.height);
+                this.setActive(true);
+                this.setVisible(true);
+                this.emitter.startFollow(this);
+                scene.physics.velocityFromRotation(angle, 900, this.body.velocity);
+            } else {
+                xIcon.click();
+            }
         }
         preUpdate(time, delta) {
             super.preUpdate(time, delta);
