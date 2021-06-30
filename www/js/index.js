@@ -74,11 +74,11 @@ function gameStart(action) {
             frameQuantity: 3,
             immovable: true
         });
-        var children = targetGroup.getChildren();
-        for (var i = 0; i < children.length; i++) {
-            var x = Phaser.Math.Between((physicalScreenWidth*.9) - children[i].width, physicalScreenWidth - children[i].width);
-            var y = Phaser.Math.Between((children[i].height * 1.25), physicalScreenHeight - children[i].height);
-            children[i].setPosition(x, y);
+        var targets = targetGroup.getChildren();
+        for (var i = 0; i < targets.length; i++) {
+            var x = Phaser.Math.Between((physicalScreenWidth*.9) - targets[i].width, physicalScreenWidth - targets[i].width);
+            var y = Phaser.Math.Between((targets[i].height * 1.25), physicalScreenHeight - targets[i].height);
+            targets[i].setPosition(x, y);
         }
         // melon chunks!
         var chunks = this.add.particles('chunk');
@@ -89,7 +89,7 @@ function gameStart(action) {
             let melon = melons[i];
             let laserGroup = this.laserGroup;
             // melon smashed!
-            this.physics.add.overlap(children, melons[i], function () {
+            this.physics.add.overlap(targets, melons[i], function () {
                 var explosion = chunks.createEmitter({
                     x: melon.x,
                     y: melon.y,
