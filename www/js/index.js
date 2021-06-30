@@ -103,6 +103,7 @@ function gameStart(action) {
         melonQuantity = melons.length;
         for (var i = 0; i < melons.length; i++) {
             let melon = melons[i];
+            melon.body.allowRotation = true;
             let laserGroup = this.laserGroup;
             // melon smashed!
             this.physics.add.overlap(targets, melons[i], function () {
