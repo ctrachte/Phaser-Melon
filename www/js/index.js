@@ -123,13 +123,20 @@ function gameStart(action) {
                 //  Hide the melon
                 laserGroup.killAndHide(melon);
                 //  And disable the melon
-                melon.body.enable = false;
+                melon.body.destroy();
                 melon.emitter.on = false;
                 melon.emitter.killAll();
                 // update score
-                score += 10;
+                score = parseInt(score) + 10;
                 scoreText.setText('Score: ' + score);
-                console.log(scoreText)
+                if (melonQuantity === 0) {
+                    setTimeout(() => {
+                        GameOver.show();
+                        PhaserMelonTitle.hide();
+                        xIcon.click();
+                    }, 1000);
+                }
+                // console.log(PhaserMelonTitle)
             });
         }
         targetGroup.refresh();
@@ -138,26 +145,25 @@ function gameStart(action) {
         this_scene = this.scene;
         // new game button
         NewGame.addEventListener('click', (e) => {
-            console.log(PhaserMelonTitle)
+            score = 0;
             menu.hide();
             xIcon.show();
-            this_scene.resume();
+            this_scene.restart();
+            this_scene.start();
         });
         // close icon
         xIcon.addEventListener("click", function () {
             xIcon.hide();
             menu.show();
-            this_scene.restart();
             this_scene.pause();
         });
         // fire melons!!
-        this.input.on('pointerdown', pointer => {
+        this.input.on('pointerup', pointer => {
             let x = this.input.x;
             let y = this.input.y;
             angle = Phaser.Math.Angle.BetweenPoints(cannon, pointer);
             this.laserGroup.fireLaser(angle, x, y);
         });
-        this.scene.pause();
     }
     // melons class, we call it laserGroup for now to be more reusable
     class LaserGroup extends Phaser.Physics.Arcade.Group {
@@ -177,9 +183,16 @@ function gameStart(action) {
         }
         fireLaser(angle, x, y) {
             // Get the first available sprite in the group
-            const laser = this.getFirstDead(false);
-            if (laser) {
-                laser.fire(angle, x, y, this.scene, this.melonTarget);
+            let melons = this.getChildren();
+            let melon = melons[melonQuantity-1];
+            if (melon) {
+                melon.fire(angle, x, y, this.scene, this.melonTarget);
+            } else {
+                setTimeout(() => {
+                    GameOver.show();
+                    PhaserMelonTitle.hide();
+                    xIcon.click();
+                }, 1000);
             }
         }
     }
@@ -189,18 +202,18 @@ function gameStart(action) {
             super(scene, x, y, 'melon');
         }
         fire(angle, x, y, scene, melonTarget) {
-            if (melonQuantity > 0) {
+            if (melonQuantity !== 0) {
                 var particles = scene.add.particles('red');
                 this.emitter = particles.createEmitter({
                     speed: 60,
                     scale: { start: 0.05, end: 0 },
                     blendMode: 'ADD'
                 });
-                this.body.reset(0, window.screen.height);
+                this.body.reset(0, window.screen.height * .85);
                 this.setActive(true);
                 this.setVisible(true);
                 this.emitter.startFollow(this);
-                scene.physics.velocityFromRotation(angle, 900, this.body.velocity);
+                scene.physics.velocityFromRotation(angle, 1500, this.body.velocity);
                 melonQuantity--;
                 melonsText.setText('Melons: ' + melonQuantity);
             } else {
@@ -246,8 +259,7 @@ function onDeviceReady() {
     xIcon.hide();
     GameOver.hide();
     PhaserMelonTitle.show();
-    console.log(PhaserMelonTitle)
     // Cordova is now initialized. Have fun!
-    console.log('Running cordova-' + device.platform + " - " + cordova.platformId + '@' + cordova.version);
+    // console.log('Running cordova-' + device.platform + " - " + cordova.platformId + '@' + cordova.version);
 
 }
