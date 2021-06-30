@@ -31,11 +31,18 @@ function gameStart(action) {
     let scoreText;
     let melonsText;
     let melonQuantity;
+    let menu = document.getElementById('menu');
+    let NewGame = document.getElementById('NewGame');
+    let PhaserMelonTitle = document.getElementById('NewGameTitle');
+    let GameOver = document.getElementById('GameOver');
+    let Exit = document.getElementById('Exit');
+    let Options = document.getElementById('Options');
+    let xIcon = document.getElementById('xIcon');
     let physicalScreenWidth = screen.width * window.devicePixelRatio;
-    let physicalScreenHeight = screen.height * window.devicePixelRatio;
+    let physicalScreenHeight = screen.height * window.devicePixelRatio * .85; // adds margins for now, game screen height was always too large
     var config = {
         type: Phaser.AUTO,
-        width: physicalScreenWidth,
+        width: physicalScreenWidth ,
         height: physicalScreenHeight,
         physics: {
             default: 'arcade',
@@ -63,6 +70,8 @@ function gameStart(action) {
         this.load.image('chunk', './assets/chunk.png');
     }
 
+    function gameOver (scene) {};
+
     function create() {
         let image = this.add.image(physicalScreenWidth / 2, physicalScreenHeight / 2, 'sky');
         let scaleX = physicalScreenWidth / image.width;
@@ -77,8 +86,8 @@ function gameStart(action) {
             frameQuantity: 3,
             immovable: true
         });
-        scoreText = this.add.text(200, 200, 'Score: 0', { fontSize: '32px', fill: '#f1f1f1' });
-        melonsText = this.add.text(200, 400, 'Melons: 30', { fontSize: '32px', fill: '#f1f1f1' });
+        scoreText = this.add.text(25, 100, 'Score: 0', { fontSize: '32px', fill: '#f1f1f1' });
+        melonsText = this.add.text(25, 150, 'Melons: 30', { fontSize: '32px', fill: '#f1f1f1' });
 
         var targets = targetGroup.getChildren();
         for (var i = 0; i < targets.length; i++) {
@@ -129,6 +138,7 @@ function gameStart(action) {
         this_scene = this.scene;
         // new game button
         NewGame.addEventListener('click', (e) => {
+            console.log(PhaserMelonTitle)
             menu.hide();
             xIcon.show();
             this_scene.resume();
@@ -186,14 +196,16 @@ function gameStart(action) {
                     scale: { start: 0.05, end: 0 },
                     blendMode: 'ADD'
                 });
-                melonQuantity--;
-                melonsText.setText('Melons: ' + melonQuantity);
                 this.body.reset(0, window.screen.height);
                 this.setActive(true);
                 this.setVisible(true);
                 this.emitter.startFollow(this);
                 scene.physics.velocityFromRotation(angle, 900, this.body.velocity);
+                melonQuantity--;
+                melonsText.setText('Melons: ' + melonQuantity);
             } else {
+                GameOver.show();
+                PhaserMelonTitle.hide();
                 xIcon.click();
             }
         }
@@ -222,14 +234,19 @@ function onDeviceReady() {
     Element.prototype.show = function () {
         this.style.display = 'block';
     }
-    const menu = document.getElementById('menu');
-    const NewGame = document.getElementById('NewGame');
-    const Exit = document.getElementById('Exit');
-    const Options = document.getElementById('Options');
-    const xIcon = document.getElementById('xIcon');
+    let menu = document.getElementById('menu');
+    let NewGame = document.getElementById('NewGame');
+    let PhaserMelonTitle = document.getElementById('NewGameTitle');
+    let GameOver = document.getElementById('GameOver');
+    let Exit = document.getElementById('Exit');
+    let Options = document.getElementById('Options');
+    let xIcon = document.getElementById('xIcon');
 
     gameStart('start');
     xIcon.hide();
+    GameOver.hide();
+    PhaserMelonTitle.show();
+    console.log(PhaserMelonTitle)
     // Cordova is now initialized. Have fun!
     console.log('Running cordova-' + device.platform + " - " + cordova.platformId + '@' + cordova.version);
 
