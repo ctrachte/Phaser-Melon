@@ -27,7 +27,8 @@ document.addEventListener('deviceready', onDeviceReady, false);
 let game = null;
 let this_scene;
 function gameStart(action) {
-
+    let score = 0;
+    let scoreText;
     let physicalScreenWidth = screen.width * window.devicePixelRatio;
     let physicalScreenHeight = screen.height * window.devicePixelRatio;
     var config = {
@@ -61,6 +62,7 @@ function gameStart(action) {
     }
 
     function create() {
+        scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#f1f1f1' });
         let image = this.add.image(physicalScreenWidth / 2, physicalScreenHeight / 2, 'sky');
         let scaleX = physicalScreenWidth / image.width;
         let scaleY = physicalScreenHeight / image.height;
@@ -76,7 +78,7 @@ function gameStart(action) {
         });
         var targets = targetGroup.getChildren();
         for (var i = 0; i < targets.length; i++) {
-            var x = Phaser.Math.Between((physicalScreenWidth*.9) - targets[i].width, physicalScreenWidth - targets[i].width);
+            var x = Phaser.Math.Between((physicalScreenWidth * .9) - targets[i].width, physicalScreenWidth - targets[i].width);
             var y = Phaser.Math.Between((targets[i].height * 1.25), physicalScreenHeight - targets[i].height);
             targets[i].setPosition(x, y);
         }
@@ -100,7 +102,8 @@ function gameStart(action) {
                     lifespan: 2000,
                     gravityY: 800
                 });
-                for (let i=100; i > 0; i--) {
+                // number of chunks
+                for (let i = 100; i > 0; i--) {
                     explosion.explode();
                 }
                 //  Hide the melon
@@ -109,6 +112,9 @@ function gameStart(action) {
                 melon.body.enable = false;
                 melon.emitter.on = false;
                 melon.emitter.killAll();
+                // update score
+                score += 10;
+                scoreText.setText('Score: ' + score);
             });
         }
         targetGroup.refresh();
