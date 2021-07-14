@@ -187,14 +187,14 @@ function gameStart(action) {
             scene.add.existing(this);
             scene.physics.add.existing(this);
             //  Set some default physics properties
-            let scale = random(0.3, 2);
+            let scale = random(0.3, 1.5);
             this.setScale(scale);
             this.setBounce(1, 1);
             this.setCollideWorldBounds(true);
-    
+            this.scoreMultiplier = scale;
             this.body.onWorldBounds = true;
     
-            this.setVelocity(0, -200);
+            this.setVelocity(0, random(-200, 300));
         }
     
     }
