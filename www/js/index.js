@@ -81,20 +81,16 @@ function gameStart(action) {
         // origin point of melons
         var cannon = this.add.image(0, physicalScreenHeight, 'white-flare').setDepth(1);
         // targets, in this case, the phaser logo
-        targetGroup = this.physics.add.staticGroup({
-            key: 'logo',
-            frameQuantity: 3,
-            immovable: true
-        });
+        // targetGroup = new TargetGroup(this);
         scoreText = this.add.text(25, 100, 'Score: 0', { fontSize: '32px', fill: '#f1f1f1' });
         melonsText = this.add.text(25, 150, 'Melons: 30', { fontSize: '32px', fill: '#f1f1f1' });
-
-        var targets = targetGroup.getChildren();
-        for (var i = 0; i < targets.length; i++) {
-            var x = Phaser.Math.Between((physicalScreenWidth * .9) - targets[i].width, physicalScreenWidth - targets[i].width);
-            var y = Phaser.Math.Between((targets[i].height * 1.25), physicalScreenHeight - targets[i].height);
-            targets[i].setPosition(x, y);
+        var targets = [];
+        for (var i = 0; i < 3; i++)
+        {
+           let target = new Target(this, (physicalScreenWidth*.8), Phaser.Math.Between(100, 500));
+            targets.push(target);
         }
+
         // melon chunks!
         var chunks = this.add.particles('chunk');
         // melons!
@@ -140,7 +136,6 @@ function gameStart(action) {
                 // console.log(PhaserMelonTitle)
             });
         }
-        targetGroup.refresh();
 
         var angle = 0;
         this_scene = this.scene;
@@ -166,6 +161,46 @@ function gameStart(action) {
             this.laserGroup.fireLaser(angle, x, y);
         });
     }
+
+    // class TargetGroup extends Phaser.Physics.Arcade.Group {
+    //     constructor(scene) {
+    //         // Call the super constructor, passing in a world and a scene
+    //         super(scene.physics.world, scene);
+    //         // Initialize the group
+    //         this.scene = scene;
+    //         this.createMultiple({
+    //             classType: Target, 
+    //             frameQuantity: 3, 
+    //             active: true,
+    //             visible: true,
+    //             key: 'logo',
+                
+    //         });
+    //     }
+    // }
+    class Target extends Phaser.Physics.Arcade.Sprite {
+
+        constructor (scene, x, y)
+        {
+            super(scene, x, y, 'logo');
+    
+            scene.add.existing(this);
+            scene.physics.add.existing(this);
+            //  Set some default physics properties
+            let scale = random(0.3, 2);
+            this.setScale(scale);
+            this.setBounce(1, 1);
+            this.setCollideWorldBounds(true);
+    
+            this.body.onWorldBounds = true;
+    
+            this.setVelocity(0, -200);
+        }
+    
+    }
+    function random(min, max) {
+        return min + Math.random() * (max - min);
+      }
     // melons class, we call it laserGroup for now to be more reusable
     class LaserGroup extends Phaser.Physics.Arcade.Group {
         constructor(scene) {
